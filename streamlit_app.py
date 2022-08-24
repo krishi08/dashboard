@@ -7,41 +7,21 @@ from PIL import Image
 # Page setting
 st.set_page_config(layout="wide")
 
-with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+leftw = pd.read_csv('https://github.com/krishi08/gait-dashboard/blob/main/_sub93-lw-s1.csv')
+rightp = pd.read_csv('https://github.com/krishi08/gait-dashboard/blob/main/_sub93-rp-s1.csv')
 
-# Data
-seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
-stocks = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/stocks_toy.csv')
-
-# Row A
-a1, a2, a3 = st.columns(3)
-a1.image(Image.open('streamlit-logo-secondary-colormark-darktext.png'))
-a2.metric("Wind", "9 mph", "-8%")
-a3.metric("Humidity", "86%", "4%")
-
-# Row B
-b1, b2, b3, b4 = st.columns(4)
-b1.metric("Temperature", "70 °F", "1.2 °F")
-b2.metric("Wind", "9 mph", "-8%")
-b3.metric("Humidity", "86%", "4%")
-b4.metric("Humidity", "86%", "4%")
-
-# Row C
-c1, c2 = st.columns((7,3))
-with c1:
-    st.markdown('### Heatmap')
-    plost.time_hist(
-    data=seattle_weather,
-    date='date',
-    x_unit='week',
-    y_unit='day',
-    color='temp_max',
-    aggregate='median',
-    legend=None)
-with c2:
-    st.markdown('### Bar chart')
-    plost.donut_chart(
-        data=stocks,
-        theta='q2',
-        color='company')
+leftw = leftw.iloc[:700:]
+a1, a2, a3 = st.columns((3,3,3))
+with a1:
+    st.markdown('### X-Axis')
+    plost.line_chart(leftw,x='Unnamed: 0',y=('gyroRotationX.rad.s.'[:500],'motionUserAccelerationX.G.'[:500]))
+with a2:
+    st.markdown('### Y-Axis')
+    plost.line_chart(leftw,x='Unnamed: 0',y=('gyroRotationX.rad.s.'[:500],'motionUserAccelerationX.G.'[:500]))
+with a3:
+    st.markdown('### Z-Axis')
+    plost.line_chart(leftw,x='Unnamed: 0',y=('gyroRotationX.rad.s.'[:500],'motionUserAccelerationX.G.'[:500]))
+b1, b2 , b3 = st.columns(3)
+b1.metric("Cadence", "73 steps/min", "+8%")
+b2.metric("Stride Length", "1.4 m", "-4%")
+b3.metric("Knee Angle", "8°", "4%")
